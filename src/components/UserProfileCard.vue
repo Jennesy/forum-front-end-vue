@@ -2,7 +2,11 @@
 	<div class="card mb-3">
 		<div class="row no-gutters">
 			<div class="col-md-4">
-				<img :src="profile.image" width="300px" height="300px" />
+				<img
+					:src="profile.image | emptyAvatarFilter"
+					width="300px"
+					height="300px"
+				/>
 			</div>
 			<div class="col-md-8">
 				<div class="card-body">
@@ -34,7 +38,9 @@
 	</div>
 </template>
 <script>
+import { emptyAvatarFilter } from './../utils/mixins'
 export default {
+	mixins: [emptyAvatarFilter],
 	props: {
 		profile: {
 			type: Object,
