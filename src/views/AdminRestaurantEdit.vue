@@ -47,7 +47,7 @@ export default {
 		}
 	},
 	methods: {
-		fetchRestaurant: function (id) {
+		fetchRestaurant: function (restaurantId) {
 			//TODO: 從後端取得餐廳資料
 			const {
 				id,
