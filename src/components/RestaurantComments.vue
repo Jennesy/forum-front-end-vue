@@ -41,7 +41,7 @@ const dummyUser = {
 export default {
 	mixins: [fromNowFilter],
 	props: {
-		restaurantComments: {
+		initialRestaurantComments: {
 			type: Array,
 			required: true,
 		},
@@ -49,6 +49,7 @@ export default {
 	data() {
 		return {
 			currentUser: dummyUser.currentUser,
+			restaurantComments: this.initialRestaurantComments,
 		}
 	},
 	methods: {

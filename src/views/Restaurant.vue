@@ -6,7 +6,7 @@
 		<hr />
 		<!-- 餐廳評論 RestaurantComments -->
 		<RestaurantComments
-			:restaurant-comments="restaurantComments"
+			:initial-restaurant-comments="restaurantComments"
 			@child-delete-comment="rootDeleteComment"
 		/>
 		<!-- 新增評論 CreateComment -->
