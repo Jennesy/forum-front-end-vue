@@ -1,5 +1,5 @@
 <template>
-	<form @submit.stop.prevent="handleSubmit">
+	<form @submit.stop.prevent="handleSubmit" v-show="!isLoading">
 		<div class="form-group">
 			<label for="name">Name</label>
 			<input
@@ -98,56 +98,15 @@
 			/>
 		</div>
 
-		<button type="submit" class="btn btn-primary">送出</button>
+		<button type="submit" class="btn btn-primary" :disabled="isProcessing">
+			{{ isProcessing ? '處理中...' : '送出' }}
+		</button>
 	</form>
 </template>
 <script>
-const dummyData = {
-	categories: [
-		{
-			id: 1,
-			name: '中式料理',
-			createdAt: '2022-05-03T09:04:29.000Z',
-			updatedAt: '2022-05-03T09:04:29.000Z',
-		},
-		{
-			id: 2,
-			name: '日本料理',
-			createdAt: '2022-05-03T09:04:29.000Z',
-			updatedAt: '2022-05-03T09:04:29.000Z',
-		},
-		{
-			id: 3,
-			name: '義大利料理',
-			createdAt: '2022-05-03T09:04:29.000Z',
-			updatedAt: '2022-05-03T09:04:29.000Z',
-		},
-		{
-			id: 4,
-			name: '墨西哥料理',
-			createdAt: '2022-05-03T09:04:29.000Z',
-			updatedAt: '2022-05-03T09:04:29.000Z',
-		},
-		{
-			id: 5,
-			name: '素食料理',
-			createdAt: '2022-05-03T09:04:29.000Z',
-			updatedAt: '2022-05-03T09:04:29.000Z',
-		},
-		{
-			id: 6,
-			name: '美式料理',
-			createdAt: '2022-05-03T09:04:29.000Z',
-			updatedAt: '2022-05-03T09:04:29.000Z',
-		},
-		{
-			id: 7,
-			name: '複合式料理',
-			createdAt: '2022-05-03T09:04:29.000Z',
-			updatedAt: '2022-05-03T09:04:29.000Z',
-		},
-	],
-}
+import { Toast } from '@/utils/helpers'
+import adminAPI from '@/apis/admin'
+
 export default {
 	name: 'AdminRestaurantForm',
 	props: {
@@ -166,16 +125,31 @@ export default {
 				}
 			},
 		},
+		isProcessing: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
 			restaurant: this.initialRestaurant,
 			categories: [],
+			isLoading: true,
 		}
 	},
 	methods: {
-		fetchCategories: function () {
-			this.categories = dummyData.categories
+		fetchCategories: async function () {
+			try {
+				const { data } = await adminAPI.categories.get()
+				this.categories = data.categories
+				this.isLoading = false
+			} catch (error) {
+				console.log('error: ', error)
+				Toast.fire({
+					icon: 'error',
+					title: '無法取得餐廳類別，請稍後再試',
+				})
+			}
 		},
 		handleFileChange: function (event) {
 			const { files } = event.target
@@ -186,6 +160,19 @@ export default {
 			this.restaurant.image = window.URL.createObjectURL(files[0])
 		},
 		handleSubmit: function (event) {
+			if (!this.restaurant.name) {
+				Toast.fire({
+					icon: 'warning',
+					title: '請填寫餐廳名稱',
+				})
+				return
+			} else if (!this.restaurant.categoryId) {
+				Toast.fire({
+					icon: 'warning',
+					title: '請選擇餐廳類別',
+				})
+				return
+			}
 			const form = event.target
 			const formData = new FormData(form)
 			this.$emit('after-submit', formData)
