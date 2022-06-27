@@ -1,5 +1,7 @@
 import moment from 'moment'
 
+// fromNowFilter
+// - Filter date-time into from-now format
 export const fromNowFilter = {
 	filters: {
 		fromNow(datetime) {
@@ -11,14 +13,18 @@ export const fromNowFilter = {
 	},
 }
 
+// emptyImageFilter
+// - Filter empty image with placeholder image from 'Placeholder.com'
 export const emptyImageFilter = {
 	filters: {
-		emptyImage(src) {
+		emptyImageFilter(src) {
 			return src || 'https://via.placeholder.com/350x220/DFDFDF?text=No+Image'
 		},
 	},
 }
 
+// defaultAvatars
+// - Filter empty avatar with a random avatar from 'defaultAvatars' list
 const defaultAvatars = [
 	'https://images.freeimages.com/images/large-previews/023/geek-avatar-1632962.jpg',
 	'https://images.freeimages.com/images/large-previews/d1f/lady-avatar-1632967.jpg',
