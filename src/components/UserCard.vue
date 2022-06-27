@@ -11,6 +11,7 @@
 			<button
 				type="button"
 				class="btn btn-danger"
+				:disabled="user.isProcessing"
 				v-if="user.isFollowed"
 				@click.stop.prevent="deleteFollowing(user.id)"
 			>
@@ -19,6 +20,7 @@
 			<button
 				type="button"
 				class="btn btn-primary"
+				:disabled="user.isProcessing"
 				v-else
 				@click.stop.prevent="addFollowing(user.id)"
 			>
@@ -41,12 +43,16 @@ export default {
 	},
 	data() {
 		return {
-			user: this.initialUser,
+			user: {
+				...this.initialUser,
+				isProcessing: false, // duplicate request handling
+			},
 		}
 	},
 	methods: {
 		addFollowing: async function (userId) {
 			try {
+				this.user.isProcessing = true
 				// 1. Call add-following api
 				const { data } = await usersAPI.addFollowing(userId)
 				// 2. Throw error if backend add-following fail
@@ -56,7 +62,9 @@ export default {
 				// 3. Update client-side data
 				this.user.isFollowed = true
 				this.user.FollowerCount++
+				this.user.isProcessing = false
 			} catch (error) {
+				this.user.isProcessing = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',
@@ -66,6 +74,7 @@ export default {
 		},
 		deleteFollowing: async function (userId) {
 			try {
+				this.user.isProcessing = true
 				// 1. Call delete-following api
 				const { data } = await usersAPI.deleteFollowing(userId)
 				// 2. Throw error if backend delete-following fail
@@ -75,7 +84,9 @@ export default {
 				// 3. Update client-side data
 				this.user.isFollowed = false
 				this.user.FollowerCount--
+				this.user.isProcessing = false
 			} catch (error) {
+				this.user.isProcessing = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',

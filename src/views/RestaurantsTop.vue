@@ -40,6 +40,7 @@
 						<button
 							type="button"
 							class="btn btn-danger mr-2"
+							:disabled="restaurant.isProcessing"
 							v-if="restaurant.isFavorited"
 							@click.stop.prevent="deleteFavorite(restaurant)"
 						>
@@ -48,6 +49,7 @@
 						<button
 							type="button"
 							class="btn btn-primary"
+							:disabled="restaurant.isProcessing"
 							v-else
 							@click.stop.prevent="addFavorite(restaurant)"
 						>
@@ -89,6 +91,7 @@ export default {
 					FavoriteCount: restaurant.FavoriteCount,
 					description: restaurant.description,
 					isFavorited: restaurant.isFavorited,
+					isProcessing: false, // duplicate request handling
 				}))
 			} catch (error) {
 				console.log('error: ', error)
@@ -100,6 +103,7 @@ export default {
 		},
 		addFavorite: async function (restaurant) {
 			try {
+				restaurant.isProcessing = true
 				// 1. Call add-favorite api
 				const { data } = await usersAPI.addFavorite(restaurant.id)
 				// 2. Throw error if backend add-favorite fail
@@ -111,7 +115,9 @@ export default {
 				// * so no need to iterate through 'restaurants' array to find data
 				restaurant.isFavorited = true
 				restaurant.FavoriteCount++
+				restaurant.isProcessing = false
 			} catch (error) {
+				restaurant.isProcessing = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',

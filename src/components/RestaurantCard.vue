@@ -27,6 +27,7 @@
 				<button
 					type="button"
 					class="btn btn-danger btn-border favorite mr-2"
+					:disabled="restaurant.isProcessing"
 					v-if="restaurant.isFavorited"
 					v-on:click.stop.prevent="deleteFavorite(restaurant.id)"
 				>
@@ -35,6 +36,7 @@
 				<button
 					type="button"
 					class="btn btn-primary btn-border favorite mr-2"
+					:disabled="restaurant.isProcessing"
 					v-else
 					v-on:click.stop.prevent="addFavorite(restaurant.id)"
 				>
@@ -43,6 +45,7 @@
 				<button
 					type="button"
 					class="btn btn-danger like mr-2"
+					:disabled="restaurant.isProcessing"
 					v-if="restaurant.isLiked"
 					v-on:click.stop.prevent="deleteLike(restaurant.id)"
 				>
@@ -51,6 +54,7 @@
 				<button
 					type="button"
 					class="btn btn-primary like mr-2"
+					:disabled="restaurant.isProcessing"
 					v-else
 					v-on:click.stop.prevent="addLike(restaurant.id)"
 				>
@@ -75,12 +79,16 @@ export default {
 	},
 	data: function () {
 		return {
-			restaurant: this.initialRestaurant,
+			restaurant: {
+				...this.initialRestaurant,
+				isProcessing: false, // duplicate request handling
+			},
 		}
 	},
 	methods: {
 		addFavorite: async function (restaurantId) {
 			try {
+				this.restaurant.isProcessing = true
 				// 1. Call add-favorite api
 				const { data } = await usersAPI.addFavorite(restaurantId)
 				// 2. Throw error if backend add-favorite fail
@@ -89,7 +97,9 @@ export default {
 				}
 				// 3. Update client-side data
 				this.restaurant.isFavorited = true
+				this.restaurant.isProcessing = false
 			} catch (error) {
+				this.restaurant.isProcessing = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',
@@ -99,6 +109,7 @@ export default {
 		},
 		deleteFavorite: async function (restaurantId) {
 			try {
+				this.restaurant.isProcessing = true
 				// 1. Call delete-favorite api
 				const { data } = await usersAPI.deleteFavorite(restaurantId)
 				// 2. Throw error if backend delete-favorite fail
@@ -107,7 +118,9 @@ export default {
 				}
 				// 3. Update client-side data
 				this.restaurant.isFavorited = false
+				this.restaurant.isProcessing = false
 			} catch (error) {
+				this.restaurant.isProcessing = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',
@@ -117,6 +130,7 @@ export default {
 		},
 		addLike: async function (restaurantId) {
 			try {
+				this.restaurant.isProcessing = true
 				// 1. Call add-like api
 				const { data } = await usersAPI.addLike(restaurantId)
 				// 2. Throw error if backend add-like fail
@@ -125,7 +139,9 @@ export default {
 				}
 				// 3. Update client-side data
 				this.restaurant.isLiked = true
+				this.restaurant.isProcessing = false
 			} catch (error) {
+				this.restaurant.isProcessing = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',
@@ -135,6 +151,7 @@ export default {
 		},
 		deleteLike: async function (restaurantId) {
 			try {
+				this.restaurant.isProcessing = true
 				// 1. Call delete-like api
 				const { data } = await usersAPI.deleteLike(restaurantId)
 				// 2. Throw error if backend delete-like fail
@@ -143,7 +160,9 @@ export default {
 				}
 				// 3. Update client-side data
 				this.restaurant.isLiked = false
+				this.restaurant.isProcessing = false
 			} catch (error) {
+				this.restaurant.isProcessing = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',
