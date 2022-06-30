@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import NotFound from '../views/NotFound.vue'
 import SignIn from '../views/SignIn.vue'
 import Restaurants from '../views/Restaurants.vue'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -20,7 +21,7 @@ const routes = [
 	{
 		path: '/',
 		name: 'root',
-		redirect: '/signin',
+		redirect: '/restaurants',
 	},
 	{
 		path: '/restaurants',
@@ -109,4 +110,16 @@ const router = new VueRouter({
 	routes,
 })
 
+router.beforeEach(async (to, from, next) => {
+	if (to.name === 'sign-in' || to.name === 'sign-up') {
+		next()
+		return
+	}
+
+	const isAuthenticated = await store.dispatch('fetchCurrentUser')
+	if (!isAuthenticated) {
+		next('/signin')
+	}
+	next()
+})
 export default router

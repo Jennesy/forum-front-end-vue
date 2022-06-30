@@ -87,8 +87,11 @@ export default {
 				if (data.status !== 'success') {
 					throw new Error(data.message)
 				}
-				// 2. save token to local storage
+				// 2-1. save token to local storage
 				localStorage.setItem('token', data.token)
+				// 2-2. save data to vuex
+				this.$store.commit('setCurrentUser', data.user)
+
 				// 3. redirect to home page
 				this.$router.push('/restaurants')
 				// 4. success message on screen

@@ -34,13 +34,6 @@
 <script>
 import AdminNav from '@/components/AdminNav'
 const dummyData = {
-	currentUser: {
-		id: 1,
-		name: 'root',
-		email: 'root@example.com',
-		image: null,
-		isAdmin: true,
-	},
 	users: [
 		{
 			id: 1,
@@ -78,15 +71,22 @@ export default {
 	components: { AdminNav },
 	data() {
 		return {
-			currentUser: { id: -1, name: '', email: '', image: '', isAdmin: false },
 			users: [],
 		}
 	},
-	methods: {
-		fetchCurrentUser: function () {
-			//TODO: 串接 API 向後端取得 current user 資料
-			this.currentUser = dummyData.currentUser
+	computed: {
+		currentUser() {
+			return {
+				id: -1,
+				name: '',
+				email: '',
+				image: '',
+				isAdmin: false,
+				...this.$store.state.currentUser,
+			}
 		},
+	},
+	methods: {
 		fetchUsers: function () {
 			//TODO: 串接 API 向後端取得 users 資料
 			this.users = dummyData.users
@@ -110,7 +110,6 @@ export default {
 	},
 	created() {
 		this.fetchUsers()
-		this.fetchCurrentUser()
 	},
 }
 </script>

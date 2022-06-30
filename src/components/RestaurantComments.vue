@@ -28,16 +28,7 @@
 </template>
 <script>
 import { fromNowFilter } from '../utils/mixins'
-const dummyUser = {
-	currentUser: {
-		id: 1,
-		name: '管理者',
-		email: 'root@example.com',
-		image: 'https://i.pravatar.cc/300',
-		isAdmin: true,
-	},
-	isAuthenticated: true,
-}
+
 export default {
 	mixins: [fromNowFilter],
 	props: {
@@ -48,7 +39,6 @@ export default {
 	},
 	data() {
 		return {
-			currentUser: dummyUser.currentUser,
 			restaurantComments: this.initialRestaurantComments,
 		}
 	},
@@ -59,6 +49,18 @@ export default {
 				(comment) => comment.id !== commentId
 			)
 			this.$emit('child-delete-comment', commentId)
+		},
+	},
+	computed: {
+		currentUser() {
+			return {
+				id: -1,
+				name: '',
+				email: '',
+				image: '',
+				isAdmin: false,
+				...this.$store.state.currentUser,
+			}
 		},
 	},
 }

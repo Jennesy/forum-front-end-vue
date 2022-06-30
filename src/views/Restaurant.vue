@@ -106,15 +106,6 @@ const dummyData = {
 	isFavorited: false,
 	isLiked: false,
 }
-const dummyUser = {
-	currentUser: {
-		id: 1,
-		name: 'root',
-		email: 'root@example.com',
-		image: null,
-		isAdmin: true,
-	},
-}
 export default {
 	name: 'Restaurant',
 	components: {
@@ -137,8 +128,19 @@ export default {
 				isLiked: false,
 			},
 			restaurantComments: [],
-			currentUser: dummyUser.currentUser,
 		}
+	},
+	computed: {
+		currentUser() {
+			return {
+				id: -1,
+				name: '',
+				email: '',
+				image: '',
+				isAdmin: false,
+				...this.$store.state.currentUser,
+			}
+		},
 	},
 	created() {
 		const { id } = this.$route.params
