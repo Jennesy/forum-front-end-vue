@@ -145,7 +145,7 @@ export default {
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',
-					title: '無法將餐廳加入最愛，請稍後再試',
+					title: '無法將餐廳點讚，請稍後再試',
 				})
 			}
 		},
@@ -166,7 +166,7 @@ export default {
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',
-					title: '無法將餐廳移除最愛，請稍後再試',
+					title: '無法將餐廳取消讚，請稍後再試',
 				})
 			}
 		},

@@ -22,13 +22,13 @@ export default {
 			headers: { Authorization: `Bearer ${getToken()}` },
 		})
 	},
-	addLike(likeId) {
-		return apiHelper.post(`/like/${likeId}`, null, {
+	addLike(restaurantId) {
+		return apiHelper.post(`/like/${restaurantId}`, null, {
 			headers: { Authorization: `Bearer ${getToken()}` },
 		})
 	},
-	deleteLike(likeId) {
-		return apiHelper.delete(`/like/${likeId}`, {
+	deleteLike(restaurantId) {
+		return apiHelper.delete(`/like/${restaurantId}`, {
 			headers: { Authorization: `Bearer ${getToken()}` },
 		})
 	},

@@ -13,7 +13,9 @@
 	</form>
 </template>
 <script>
-import { v4 as uuidv4 } from 'uuid'
+import restaurantsAPI from '@/apis/restaurants'
+import { Toast } from '@/utils/helpers'
+
 export default {
 	name: 'CreateComment',
 	props: {
@@ -27,16 +29,52 @@ export default {
 			text: '',
 		}
 	},
+	computed: {
+		userId() {
+			return this.$store.state.currentUser.id
+		},
+	},
 	methods: {
-		handleSummit() {
-			//TODO: 透過API向伺服器請求新增一筆comment...
-			// 得到commentId
-			this.$emit('after-create-comment', {
-				commentId: uuidv4(),
-				restaurantId: this.restaurantId,
-				text: this.text,
-			})
-			this.text = ''
+		async handleSummit() {
+			try {
+				// Remove whitespace from both ends
+				// Check empty string
+				this.text = this.text.trim()
+				if (this.text === '') {
+					Toast.fire({
+						icon: 'warning',
+						title: '無法新增空白留言',
+					})
+					return
+				}
+
+				// Call comments-create api
+				const { data } = await restaurantsAPI.comments.create({
+					text: this.text,
+					restaurantId: this.restaurantId,
+					id: this.userId,
+				})
+
+				// Throw error when backend update fail
+				if (data.status !== 'success') {
+					throw new Error(data.message)
+				}
+
+				// Update parent data
+				this.$emit('after-create-comment', {
+					commentId: data.commentId,
+					restaurantId: this.restaurantId,
+					text: this.text,
+				})
+
+				this.text = ''
+			} catch (error) {
+				console.log('error: ', error)
+				Toast.fire({
+					icon: 'error',
+					title: '無法新增留言，請稍後再試',
+				})
+			}
 		},
 	},
 }

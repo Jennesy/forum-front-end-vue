@@ -27,6 +27,8 @@
 	</div>
 </template>
 <script>
+import restaurantsAPI from '@/apis/restaurants'
+import { Toast } from '@/utils/helpers'
 import { fromNowFilter } from '../utils/mixins'
 
 export default {
@@ -42,13 +44,26 @@ export default {
 			restaurantComments: this.initialRestaurantComments,
 		}
 	},
+	watch: {
+		initialRestaurantComments(newValue) {
+			this.restaurantComments = newValue
+		},
+	},
 	methods: {
-		childDeleteComment(commentId) {
-			console.log('child-delete-comment', commentId)
-			this.restaurantComments = this.restaurantComments.filter(
-				(comment) => comment.id !== commentId
-			)
-			this.$emit('child-delete-comment', commentId)
+		async childDeleteComment(commentId) {
+			try {
+				const { data } = await restaurantsAPI.comments.delete({ commentId })
+				if (data.status !== 'success') {
+					throw new Error(data.message)
+				}
+				this.$emit('child-delete-comment', commentId)
+			} catch (error) {
+				console.log('error: ', error)
+				Toast.fire({
+					icon: 'error',
+					title: '無法刪除評論，請稍後再試',
+				})
+			}
 		},
 	},
 	computed: {
