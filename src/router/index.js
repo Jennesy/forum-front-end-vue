@@ -114,9 +114,15 @@ router.beforeEach(async (to, from, next) => {
 	if (to.name === 'sign-in' || to.name === 'sign-up') {
 		next()
 		return
+	const tokenInLocalStorage = localStorage.getItem('token')
+	const tokenInStore = store.state.token
+	let isAuthenticated = store.state.isAuthenticated
+
+	// Check token existence and token change
+	if (tokenInLocalStorage && tokenInLocalStorage !== tokenInStore) {
+		isAuthenticated = await store.dispatch('fetchCurrentUser')
 	}
 
-	const isAuthenticated = await store.dispatch('fetchCurrentUser')
 	if (!isAuthenticated) {
 		next('/signin')
 	}

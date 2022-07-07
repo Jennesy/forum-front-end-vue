@@ -15,6 +15,7 @@ export default new Vuex.Store({
 			isAdmin: false,
 		},
 		isAuthenticated: false,
+		token: '',
 	},
 	getters: {},
 	mutations: {
@@ -26,10 +27,12 @@ export default new Vuex.Store({
 			}
 			// 將使用者的登入狀態改為 true
 			state.isAuthenticated = true
+			state.token = localStorage.getItem('token')
 		},
 		revokeAuthentication(state) {
 			state.currentUser = {}
 			state.isAuthenticated = false
+			state.token = ''
 			localStorage.removeItem('token')
 		},
 	},
