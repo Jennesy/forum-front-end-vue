@@ -4,12 +4,14 @@
 		<h1 class="mt-5">人氣餐廳</h1>
 
 		<hr />
+		<Spinner v-if="isLoading" />
 		<!-- Top Restaurant Cards -->
 		<div
 			class="card mb-3"
 			style="max-width: 540px; margin: auto"
 			v-for="restaurant in restaurants"
 			:key="restaurant.id"
+			v-else
 		>
 			<div class="row no-gutters">
 				<div class="col-md-4">
@@ -67,20 +69,24 @@ import { emptyImageFilter } from './../utils/mixins'
 import { Toast } from '@/utils/helpers'
 import restaurantsAPI from '@/apis/restaurants'
 import usersAPI from '@/apis/users'
+import Spinner from '@/components/Spinner.vue'
 
 export default {
 	mixins: [emptyImageFilter],
 	components: {
 		NavTabs,
+		Spinner,
 	},
 	data() {
 		return {
 			restaurants: [],
+			isLoading: true,
 		}
 	},
 	methods: {
 		fetchRestaurants: async function () {
 			try {
+				this.isLoading = true
 				// 1. Call api
 				const { data } = await restaurantsAPI.getTopRestaurants()
 				// 2. Save response data to vue
@@ -93,7 +99,9 @@ export default {
 					isFavorited: restaurant.isFavorited,
 					isProcessing: false, // duplicate request handling
 				}))
+				this.isLoading = false
 			} catch (error) {
+				this.isLoading = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',

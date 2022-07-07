@@ -3,7 +3,8 @@
 		<NavTabs />
 		<h1 class="mt-5">美食達人</h1>
 		<hr />
-		<div class="row text-center">
+		<Spinner v-if="isLoading" />
+		<div class="row text-center" v-else>
 			<!-- user cards -->
 			<UserCard v-for="user in users" :initial-user="user" :key="user.id" />
 		</div>
@@ -13,17 +14,26 @@
 import NavTabs from '../components/NavTabs.vue'
 import UserCard from '../components/UserCard.vue'
 import usersAPI from '@/apis/users'
+import Spinner from '@/components/Spinner.vue'
 import { Toast } from '@/utils/helpers'
 
 export default {
+	name: 'UsersTop',
+	components: {
+		NavTabs,
+		UserCard,
+		Spinner,
+	},
 	data() {
 		return {
 			users: [],
+			isLoading: true,
 		}
 	},
 	methods: {
 		fetchUsers: async function () {
 			try {
+				this.isLoading = true
 				const { data } = await usersAPI.getTopUsers()
 				this.users = data.users.map((user) => ({
 					id: user.id,
@@ -32,7 +42,9 @@ export default {
 					FollowerCount: user.FollowerCount,
 					isFollowed: user.isFollowed,
 				}))
+				this.isLoading = false
 			} catch (error) {
+				this.isLoading = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',
@@ -43,10 +55,6 @@ export default {
 	},
 	created() {
 		this.fetchUsers()
-	},
-	components: {
-		NavTabs,
-		UserCard,
 	},
 }
 </script>

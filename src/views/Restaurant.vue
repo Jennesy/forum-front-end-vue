@@ -1,19 +1,22 @@
 <template>
 	<div class="container py-5">
 		<h1>餐廳描述頁</h1>
-		<!-- 餐廳資訊頁 RestaurantDetail -->
-		<RestaurantDetail :initial-restaurant="restaurant" />
-		<hr />
-		<!-- 餐廳評論 RestaurantComments -->
-		<RestaurantComments
-			:initial-restaurant-comments="restaurantComments"
-			@child-delete-comment="afterDeleteComment"
-		/>
-		<!-- 新增評論 CreateComment -->
-		<CreateComment
-			@after-create-comment="afterCreateComment"
-			:restaurant-id="restaurant.id"
-		/>
+		<Spinner v-if="isLoading" />
+		<template v-else>
+			<!-- 餐廳資訊頁 RestaurantDetail -->
+			<RestaurantDetail :initial-restaurant="restaurant" />
+			<hr />
+			<!-- 餐廳評論 RestaurantComments -->
+			<RestaurantComments
+				:initial-restaurant-comments="restaurantComments"
+				@child-delete-comment="afterDeleteComment"
+			/>
+			<!-- 新增評論 CreateComment -->
+			<CreateComment
+				@after-create-comment="afterCreateComment"
+				:restaurant-id="restaurant.id"
+			/>
+		</template>
 	</div>
 </template>
 <script>
@@ -21,6 +24,7 @@ import RestaurantDetail from '../components/RestaurantDetail.vue'
 import RestaurantComments from '../components/RestaurantComments.vue'
 import CreateComment from '../components/CreateComment.vue'
 import restaurantsAPI from '@/apis/restaurants'
+import Spinner from '@/components/Spinner.vue'
 import { Toast } from '@/utils/helpers'
 
 export default {
@@ -29,6 +33,7 @@ export default {
 		RestaurantDetail,
 		RestaurantComments,
 		CreateComment,
+		Spinner,
 	},
 	data() {
 		return {
@@ -45,6 +50,7 @@ export default {
 				isLiked: false,
 			},
 			restaurantComments: [],
+			isLoading: true,
 		}
 	},
 	computed: {
@@ -70,6 +76,7 @@ export default {
 	methods: {
 		fetchRestaurant: async function (restaurantId) {
 			try {
+				this.isLoading = true
 				// fetch data from backend
 				const { data } = await restaurantsAPI.getRestaurant({ restaurantId })
 				const {
@@ -98,7 +105,9 @@ export default {
 					isLiked,
 				}
 				this.restaurantComments = data.restaurant.Comments
+				this.isLoading = false
 			} catch (error) {
+				this.isLoading = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',

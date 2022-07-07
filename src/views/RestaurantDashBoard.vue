@@ -1,19 +1,21 @@
 <template>
 	<div class="container py-5">
-		<div>
-			<h1>{{ restaurant.name }}</h1>
-			<span class="badge badge-secondary mt-1 mb-3">
-				{{ restaurant.categoryName }}
-			</span>
-		</div>
+		<Spinner v-if="isLoading" />
+		<template v-else>
+			<div>
+				<h1>{{ restaurant.name }}</h1>
+				<span class="badge badge-secondary mt-1 mb-3">
+					{{ restaurant.categoryName }}
+				</span>
+			</div>
 
-		<hr />
+			<hr />
 
-		<ul>
-			<li>評論數： {{ restaurant.commentsLength }}</li>
-			<li>瀏覽次數： {{ restaurant.viewCounts }}</li>
-		</ul>
-
+			<ul>
+				<li>評論數： {{ restaurant.commentsLength }}</li>
+				<li>瀏覽次數： {{ restaurant.viewCounts }}</li>
+			</ul>
+		</template>
 		<button type="button" class="btn btn-link" @click="$router.back()">
 			回上一頁
 		</button>
@@ -21,9 +23,13 @@
 </template>
 <script>
 import restaurantsAPI from '@/apis/restaurants'
+import Spinner from '@/components/Spinner.vue'
 import { Toast } from '@/utils/helpers'
 
 export default {
+	components: {
+		Spinner,
+	},
 	data() {
 		return {
 			restaurant: {
@@ -33,11 +39,13 @@ export default {
 				commentsLength: '',
 				viewCounts: '',
 			},
+			isLoading: true,
 		}
 	},
 	methods: {
 		fetchRestaurant: async function (restaurantId) {
 			try {
+				this.isLoading = true
 				const { data } = await restaurantsAPI.getRestaurant({
 					restaurantId,
 				})
@@ -47,7 +55,9 @@ export default {
 					commentsLength: data.restaurant.Comments.length,
 					viewCounts: data.restaurant.viewCounts,
 				}
+				this.isLoading = false
 			} catch (error) {
+				this.isLoading = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',

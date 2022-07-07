@@ -1,21 +1,25 @@
 <template>
 	<div class="container py-5">
+		<Spinner v-if="isLoading" />
 		<AdminRestaurantForm
 			:initial-restaurant="restaurant"
 			:is-processing="isProcessing"
 			@after-submit="handleAfterSubmit"
+			v-else
 		/>
 	</div>
 </template>
 <script>
 import AdminRestaurantForm from '../components/AdminRestaurantForm.vue'
 import adminAPI from '@/apis/admin'
+import Spinner from '@/components/Spinner.vue'
 import { Toast } from '@/utils/helpers'
 
 export default {
 	name: 'AdminRestaurantEdit',
 	components: {
 		AdminRestaurantForm,
+		Spinner,
 	},
 	data() {
 		return {
@@ -29,12 +33,14 @@ export default {
 				image: '',
 				categoryId: '',
 			},
+			isLoading: true,
 			isProcessing: false,
 		}
 	},
 	methods: {
 		fetchRestaurant: async function (restaurantId) {
 			try {
+				this.isLoading = true
 				const { data } = await adminAPI.restaurants.getDetail({ restaurantId })
 
 				const {
@@ -59,7 +65,9 @@ export default {
 					image,
 					categoryId,
 				}
+				this.isLoading = false
 			} catch (error) {
+				this.isLoading = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',

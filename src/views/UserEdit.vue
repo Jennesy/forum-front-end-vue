@@ -1,6 +1,7 @@
 <template>
 	<div class="container py-5">
-		<form @submit.stop.prevent="handleSubmit">
+		<Spinner v-if="isLoading" />
+		<form @submit.stop.prevent="handleSubmit" v-else>
 			<div class="form-group">
 				<label for="name">Name</label>
 				<input
@@ -42,10 +43,14 @@
 
 <script>
 import usersAPI from '@/apis/users'
+import Spinner from '@/components/Spinner.vue'
 import { Toast } from '@/utils/helpers'
 
 export default {
 	name: 'UserEdit',
+	components: {
+		Spinner,
+	},
 	data() {
 		return {
 			user: {
@@ -55,12 +60,14 @@ export default {
 				isAdmin: false,
 				image: '',
 			},
+			isLoading: true,
 			isProcessing: false,
 		}
 	},
 	methods: {
 		fetchUser: async function () {
 			try {
+				this.isLoading = true
 				const { data } = await usersAPI.getCurrentUser()
 				const { id, name, email, isAdmin, image } = data
 				this.user = {
@@ -71,7 +78,9 @@ export default {
 					isAdmin,
 					image,
 				}
+				this.isLoading = false
 			} catch (error) {
+				this.isLoading = false
 				console.log('error: ', error)
 				Toast.fire({
 					icon: 'error',
