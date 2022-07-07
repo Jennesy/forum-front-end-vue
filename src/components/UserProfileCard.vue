@@ -3,7 +3,7 @@
 		<div class="row no-gutters">
 			<div class="col-md-4">
 				<img
-					:src="profile.image | emptyAvatarFilter"
+					:src="profile.image | emptyImageFilter"
 					width="300px"
 					height="300px"
 				/>
@@ -27,7 +27,7 @@
 							<strong>{{ profile.followersCounts }}</strong> followers (追隨者)
 						</li>
 					</ul>
-					<p>
+					<p v-if="profile.id === currentUser.id">
 						<router-link :to="{ name: 'user-edit', params: { id: profile.id } }"
 							><button type="submit" class="btn btn-primary">
 								edit
@@ -40,13 +40,19 @@
 	</div>
 </template>
 <script>
-import { emptyAvatarFilter } from './../utils/mixins'
+import { emptyImageFilter } from './../utils/mixins'
+
 export default {
-	mixins: [emptyAvatarFilter],
+	mixins: [emptyImageFilter],
 	props: {
 		profile: {
 			type: Object,
 			required: true,
+		},
+	},
+	computed: {
+		currentUser() {
+			return { ...this.$store.state.currentUser }
 		},
 	},
 }
