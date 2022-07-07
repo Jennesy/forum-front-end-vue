@@ -5,7 +5,10 @@
 			<div v-for="comment in comments" v-bind:key="comment.id">
 				<h4>
 					<router-link
-						:to="{ name: 'restaurant', params: { id: comment.Restaurant.id } }"
+						:to="{
+							name: 'restaurant',
+							params: { id: comment.RestaurantId },
+						}"
 					>
 						{{ comment.Restaurant.name }}
 					</router-link>
@@ -21,8 +24,10 @@
 		</div>
 	</div>
 </template>
+
 <script>
 import { fromNowFilter } from '../utils/mixins'
+
 export default {
 	mixins: [fromNowFilter],
 	props: {

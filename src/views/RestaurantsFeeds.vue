@@ -44,7 +44,10 @@ export default {
 			try {
 				const response = await restaurantsAPI.getFeeds()
 				this.restaurants = response.data.restaurants
-				this.comments = response.data.comments
+				this.comments = response.data.comments.filter(
+					(comment) => comment.RestaurantId
+				)
+				this.isLoading = false
 			} catch (error) {
 				console.log('error: ', error)
 				Toast.fire({
