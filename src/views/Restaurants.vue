@@ -2,7 +2,7 @@
 	<div class="container py-5">
 		<NavTabs />
 		<!-- 餐廳類別標籤 RestaurantsNavPills -->
-		<RestaurantsNavPills :categories="categories" />
+		<RestaurantsNavPills :categories="categories" :category-id="categoryId" />
 		<div class="row">
 			<!-- 餐廳卡片 RestaurantCard-->
 			<RestaurantCard
@@ -11,6 +11,7 @@
 				:initial-restaurant="restaurant"
 			/>
 		</div>
+		<!-- 分頁標籤 RestaurantPagination -->
 		<RestaurantsPagination
 			v-if="totalPage.length > 1"
 			:current-page="currentPage"
@@ -19,8 +20,6 @@
 			:previous-page="previousPage"
 			:next-page="nextPage"
 		/>
-
-		<!-- 分頁標籤 RestaurantPagination -->
 	</div>
 </template>
 <script>

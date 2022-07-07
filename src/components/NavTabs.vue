@@ -1,7 +1,16 @@
 <template>
 	<ul class="nav nav-tabs mb-4">
 		<li v-for="tab in tabs" v-bind:key="tab.id" class="nav-item">
-			<router-link v-bind:to="tab.path" class="nav-link">
+			<router-link
+				v-bind:to="tab.path"
+				:class="[
+					'nav-link',
+					{
+						active: tab.title === '首頁' && $route.name === 'restaurants',
+						// should stay active even with query string
+					},
+				]"
+			>
 				{{ tab.title }}
 			</router-link>
 		</li>
@@ -9,6 +18,7 @@
 </template>
 <script>
 import { v4 as uuidv4 } from 'uuid'
+
 export default {
 	data() {
 		return {
