@@ -38,8 +38,8 @@ export default {
 		async handleSummit() {
 			try {
 				// Remove whitespace from both ends
-				// Check empty string
 				this.text = this.text.trim()
+				// Check empty string
 				if (this.text === '') {
 					Toast.fire({
 						icon: 'warning',
@@ -79,3 +79,8 @@ export default {
 	},
 }
 </script>
+<style scoped>
+.form-group {
+	margin: 21px 0 8px;
+}
+</style>
