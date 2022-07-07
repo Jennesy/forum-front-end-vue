@@ -21,9 +21,10 @@
 							type="button"
 							class="btn btn-link"
 							v-show="user.id !== currentUser.id"
-							@click.stop.prevent="toggleUserRole(user.id)"
+							@click.stop.prevent="toggleUserRole(user)"
+							:disabled="user.isProcessing"
 						>
-							set as {{ !user.isAdmin | currentRole }}
+							{{ !user.isAdmin | currentRole | settingBtn(user.isProcessing) }}
 						</button>
 					</td>
 				</tr>
@@ -33,42 +34,12 @@
 </template>
 <script>
 import AdminNav from '@/components/AdminNav'
-const dummyData = {
-	users: [
-		{
-			id: 1,
-			name: 'root',
-			email: 'root@example.com',
-			password: '$2a$10$sOmFvWTdbzoZNc3jhr/8.uRRj19E78r92/0zqaNfzpGtFyXUVeTWO',
-			isAdmin: true,
-			image: null,
-			createdAt: '2022-05-03T09:04:28.000Z',
-			updatedAt: '2022-05-03T09:04:28.000Z',
-		},
-		{
-			id: 2,
-			name: 'user1',
-			email: 'user1@example.com',
-			password: '$2a$10$9Aa4YNz15hzrTpvyc9wwau0b61b002RBP0eY7FQ5bytaw.G6e1Fbq',
-			isAdmin: false,
-			image: null,
-			createdAt: '2022-05-03T09:04:29.000Z',
-			updatedAt: '2022-05-03T09:04:29.000Z',
-		},
-		{
-			id: 3,
-			name: 'user2',
-			email: 'user2@example.com',
-			password: '$2a$10$dHDYUB9LfDjCLjPanIFNV.DzVgkfA5pzFWa6g8kCBRXxZaTgSlQXe',
-			isAdmin: false,
-			image: null,
-			createdAt: '2022-05-03T09:04:29.000Z',
-			updatedAt: '2022-05-03T09:04:29.000Z',
-		},
-	],
-}
+import adminAPI from '@/apis/admin'
+import { Toast } from '@/utils/helpers'
+
 export default {
 	components: { AdminNav },
+	name: 'AdminUsers',
 	data() {
 		return {
 			users: [],
@@ -87,25 +58,55 @@ export default {
 		},
 	},
 	methods: {
-		fetchUsers: function () {
-			//TODO: 串接 API 向後端取得 users 資料
-			this.users = dummyData.users
+		fetchUsers: async function () {
+			try {
+				const { data } = await adminAPI.users.get()
+				this.users = data.users.map((user) => ({
+					id: user.id,
+					name: user.name,
+					email: user.email,
+					image: user.image,
+					isAdmin: user.isAdmin,
+					isProcessing: false,
+				}))
+			} catch (error) {
+				console.log('error: ', error)
+				Toast.fire({
+					icon: 'error',
+					title: '無法取得使用者資料，請稍後再試',
+				})
+			}
 		},
-		toggleUserRole: function (userId) {
-			this.users = this.users.map((user) => {
-				if (user.id === userId) {
-					return {
-						...user,
-						isAdmin: !user.isAdmin,
-					}
+		toggleUserRole: async function (user) {
+			try {
+				user.isProcessing = true
+				console.log(user)
+				const { data } = await adminAPI.users.edit({
+					userId: user.id,
+					isAdmin: !user.isAdmin,
+				})
+				if (data.status !== 'success') {
+					throw new Error(data.message)
 				}
-				return user
-			})
+				user.isAdmin = !user.isAdmin
+				user.isProcessing = false
+			} catch (error) {
+				user.isProcessing = false
+				console.log('error: ', error)
+				Toast.fire({
+					icon: 'error',
+					title: '無法更新使用者資料，請稍後再試',
+				})
+			}
 		},
 	},
 	filters: {
 		currentRole: function (isAdmin) {
 			return isAdmin ? 'admin' : 'user'
+		},
+		settingBtn: function (role, isProcessing) {
+			if (isProcessing) return '處理中...'
+			return `set as ${role}`
 		},
 	},
 	created() {

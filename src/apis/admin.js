@@ -29,4 +29,12 @@ export default {
 			return apiHelper.put(`/admin/restaurants/${restaurantId}`, formData)
 		},
 	},
+	users: {
+		get() {
+			return apiHelper.get('/admin/users')
+		},
+		edit({ userId, isAdmin }) {
+			return apiHelper.put(`/admin/users/${userId}`, { isAdmin })
+		},
+	},
 }
