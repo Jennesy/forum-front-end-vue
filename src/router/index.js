@@ -111,9 +111,6 @@ const router = new VueRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-	if (to.name === 'sign-in' || to.name === 'sign-up') {
-		next()
-		return
 	const tokenInLocalStorage = localStorage.getItem('token')
 	const tokenInStore = store.state.token
 	let isAuthenticated = store.state.isAuthenticated
@@ -123,8 +120,16 @@ router.beforeEach(async (to, from, next) => {
 		isAuthenticated = await store.dispatch('fetchCurrentUser')
 	}
 
-	if (!isAuthenticated) {
+	const pathsWithoutAuthentication = ['sign-in', 'sign-up']
+
+	if (!isAuthenticated && !pathsWithoutAuthentication.includes(to.name)) {
 		next('/signin')
+		return
+	}
+
+	if (isAuthenticated && pathsWithoutAuthentication.includes(to.name)) {
+		next('/restaurants')
+		return
 	}
 	next()
 })
