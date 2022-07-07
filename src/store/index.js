@@ -27,6 +27,11 @@ export default new Vuex.Store({
 			// 將使用者的登入狀態改為 true
 			state.isAuthenticated = true
 		},
+		revokeAuthentication(state) {
+			state.currentUser = {}
+			state.isAuthenticated = false
+			localStorage.removeItem('token')
+		},
 	},
 	actions: {
 		async fetchCurrentUser({ commit }) {
@@ -44,6 +49,7 @@ export default new Vuex.Store({
 			} catch (error) {
 				console.log('error', error)
 				console.error('can not fetch user information')
+				commit('revokeAuthentication')
 				Toast.fire({
 					icon: 'warning',
 					title: '請先登入',
