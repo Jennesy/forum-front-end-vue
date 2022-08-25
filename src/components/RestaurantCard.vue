@@ -192,14 +192,21 @@ export default {
 .card-img-top {
 	background-color: #efefef;
 }
-
+.card-img-top {
+	border-radius: 0;
+	border-radius: 0.25rem;
+	border-bottom-right-radius: 0.75rem;
+	margin: 12px;
+	margin-bottom: 0px;
+	width: auto;
+	object-fit: cover;
+}
 .card-body {
 	padding: 17.5px;
 }
 
 .card-footer {
 	padding: 9px 17.5px;
-	border-color: rgb(232, 232, 232);
-	background: white;
+	border-color: transparent;
 }
 </style>

@@ -4,7 +4,7 @@
 		<h1 class="mt-5">美食達人</h1>
 		<hr />
 		<Spinner v-if="isLoading" />
-		<div class="row text-center" v-else>
+		<div class="card-wrapper text-center" v-else>
 			<!-- user cards -->
 			<UserCard v-for="user in users" :initial-user="user" :key="user.id" />
 		</div>
@@ -58,3 +58,15 @@ export default {
 	},
 }
 </script>
+
+<style scoped>
+.card-wrapper {
+	display: grid;
+	gap: 16px;
+}
+@media (min-width: 480px) {
+	.card-wrapper {
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	}
+}
+</style>

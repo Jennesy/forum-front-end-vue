@@ -1,12 +1,22 @@
 <template>
-	<div class="col-3">
+	<div
+		class="d-flex flex-row flex-sm-column align-items-center bg-light p-3 rounded"
+	>
 		<router-link :to="{ name: 'user', params: { id: user.id } }">
-			<img :src="user.image | emptyAvatarFilter" width="140px" height="140px" />
+			<img
+				class="rounded"
+				:src="user.image | emptyAvatarFilter(user.id)"
+				width="140px"
+				height="140px"
+			/>
 		</router-link>
-		<h2>{{ user.name }}</h2>
-		<span class="badge badge-secondary"
-			>追蹤人數：{{ user.FollowerCount }}</span
-		>
+		<div>
+			<h2>{{ user.name }}</h2>
+			<span class="badge badge-secondary"
+				>追蹤人數：{{ user.FollowerCount }}</span
+			>
+		</div>
+
 		<p class="mt-3">
 			<button
 				type="button"
@@ -97,3 +107,16 @@ export default {
 	},
 }
 </script>
+<style scoped>
+.flex-row {
+	justify-content: space-between;
+}
+img {
+	object-fit: cover;
+}
+@media (min-width: 480px) {
+	.flex-sm-column {
+		flex-direction: column !important;
+	}
+}
+</style>

@@ -6,7 +6,7 @@
 			</div>
 
 			<div class="form-label-group mb-2">
-				<label for="email">email</label>
+				<label for="email">Email</label>
 				<input
 					id="email"
 					v-model="email"
@@ -20,7 +20,7 @@
 				/>
 			</div>
 
-			<div class="form-label-group mb-3">
+			<div class="form-label-group mb-5">
 				<label for="password">Password</label>
 				<input
 					id="password"
@@ -112,3 +112,32 @@ export default {
 	},
 }
 </script>
+
+<style scoped>
+h1 {
+	letter-spacing: 0.05rem;
+}
+.container {
+	background-color: rgba(255, 255, 255, 0.5);
+	backdrop-filter: blur(4px);
+	padding: 3rem;
+	border-radius: 0.25rem;
+	transform: translateY(40px);
+}
+.container h1,
+.container label,
+.container p.text-muted {
+	color: black !important;
+	text-shadow: 0 0 7px rgba(255, 255, 255, 1);
+}
+button[type='submit'] {
+	font-size: 16px;
+}
+button[type='submit']:hover {
+	text-shadow: 0 0 7px rgba(255, 255, 255, 1);
+}
+button[type='submit'] + div a {
+	text-shadow: 0 0 7px rgba(255, 255, 255, 1);
+	font-size: 16px;
+}
+</style>

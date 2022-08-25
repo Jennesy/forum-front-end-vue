@@ -47,12 +47,14 @@ export default {
 	color: #4d4d4d;
 	border: 1px solid #a1a1a1;
 	transition: none;
+	background-color: rgba(255, 255, 255, 0.8);
 }
-
+.nav-pills .nav-link:hover {
+	background-color: white;
+}
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
 	border-width: 2px;
 	border-color: #bd2333;
-	background-color: transparent;
 }
 </style>

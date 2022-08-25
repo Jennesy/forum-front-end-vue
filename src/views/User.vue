@@ -1,9 +1,11 @@
 <template>
-	<div class="album py-5 bg-light">
+	<div class="album py-5">
 		<div class="container">
 			<Spinner v-if="isLoading" />
 			<template v-else>
-				<UserProfileCard :profile="user.profile" />
+				<UserProfileCard
+					:profile="user.profile"
+				/>
 				<div class="row">
 					<div class="col-md-4">
 						<UserFollowingsCard :followings="user.followings" />

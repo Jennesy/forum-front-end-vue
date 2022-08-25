@@ -1,16 +1,15 @@
 <template>
 	<div class="card mb-3">
-		<div class="row no-gutters">
-			<div class="col-md-4">
+		<div class="row g-3">
+			<div class="col-4 col-sm-6 col-md-4 col-lg-3 my-sm-auto">
 				<img
-					:src="profile.image | emptyImageFilter"
-					width="300px"
-					height="300px"
+					class="w-100 m-3 rounded"
+					:src="profile.image | emptyAvatarFilter(profile.id)"
 				/>
 			</div>
-			<div class="col-md-8">
+			<div class="col-8 col-sm-6 col-md-8 col-lg-9">
 				<div class="card-body">
-					<h5 class="card-title">{{ profile.name }}</h5>
+					<h4 class="card-title">{{ profile.name }}</h4>
 					<p class="card-text">{{ profile.email }}</p>
 					<ul class="list-unstyled list-inline">
 						<li>
@@ -27,7 +26,7 @@
 							<strong>{{ profile.followersCounts }}</strong> followers (追隨者)
 						</li>
 					</ul>
-					<p v-if="profile.id === currentUser.id">
+					<p v-if="profile.id === currentUser.id" class="m-0">
 						<router-link :to="{ name: 'user-edit', params: { id: profile.id } }"
 							><button type="submit" class="btn btn-primary">
 								edit
@@ -40,10 +39,10 @@
 	</div>
 </template>
 <script>
-import { emptyImageFilter } from './../utils/mixins'
+import { emptyAvatarFilter } from './../utils/mixins'
 
 export default {
-	mixins: [emptyImageFilter],
+	mixins: [emptyAvatarFilter],
 	props: {
 		profile: {
 			type: Object,
@@ -57,3 +56,9 @@ export default {
 	},
 }
 </script>
+<style scoped>
+img {
+	aspect-ratio: 1;
+	object-fit: cover;
+}
+</style>

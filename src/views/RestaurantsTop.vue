@@ -4,59 +4,58 @@
 		<h1 class="mt-5">人氣餐廳</h1>
 
 		<hr />
-		<Spinner v-if="isLoading" />
 		<!-- Top Restaurant Cards -->
-		<div
-			class="card mb-3"
-			style="max-width: 540px; margin: auto"
-			v-for="restaurant in restaurants"
-			:key="restaurant.id"
-			v-else
-		>
-			<div class="row no-gutters">
-				<div class="col-md-4">
-					<router-link
-						:to="{ name: 'restaurant', params: { id: restaurant.id } }"
-					>
-						<img class="card-img" :src="restaurant.image | emptyImageFilter" />
-					</router-link>
-				</div>
-				<div class="col-md-8">
-					<div class="card-body">
-						<h5 class="card-title">{{ restaurant.name }}</h5>
-						<span class="badge badge-secondary"
-							>收藏數：{{ restaurant.FavoriteCount }}</span
-						>
-						<p class="card-text">
-							{{ restaurant.description }}
-						</p>
+		<Spinner v-if="isLoading" />
+		<div class="card-wrapper" v-else>
+			<div class="card" v-for="restaurant in restaurants" :key="restaurant.id">
+				<div class="row gy-1 align-items-center">
+					<div class="col-sm-4 col-lg-3 col-xl-4">
 						<router-link
-							class="btn btn-primary mr-2"
-							:to="{
-								name: 'restaurant-dashboard',
-								params: { id: restaurant.id },
-							}"
-							>Show
+							:to="{ name: 'restaurant', params: { id: restaurant.id } }"
+						>
+							<img
+								class="card-img"
+								:src="restaurant.image | emptyImageFilter"
+							/>
 						</router-link>
+					</div>
+					<div class="col-sm-8 col-lg-9 col-xl-8">
+						<div class="card-body">
+							<h5 class="card-title">{{ restaurant.name }}</h5>
+							<span class="badge badge-secondary"
+								>收藏數：{{ restaurant.FavoriteCount }}</span
+							>
+							<p class="card-text text-truncate">
+								{{ restaurant.description }}
+							</p>
+							<router-link
+								class="btn btn-primary mr-2"
+								:to="{
+									name: 'restaurant-dashboard',
+									params: { id: restaurant.id },
+								}"
+								>Dashboard
+							</router-link>
 
-						<button
-							type="button"
-							class="btn btn-danger mr-2"
-							:disabled="restaurant.isProcessing"
-							v-if="restaurant.isFavorited"
-							@click.stop.prevent="deleteFavorite(restaurant)"
-						>
-							移除最愛
-						</button>
-						<button
-							type="button"
-							class="btn btn-primary"
-							:disabled="restaurant.isProcessing"
-							v-else
-							@click.stop.prevent="addFavorite(restaurant)"
-						>
-							加到最愛
-						</button>
+							<button
+								type="button"
+								class="btn btn-danger mr-2"
+								:disabled="restaurant.isProcessing"
+								v-if="restaurant.isFavorited"
+								@click.stop.prevent="deleteFavorite(restaurant)"
+							>
+								移除最愛
+							</button>
+							<button
+								type="button"
+								class="btn btn-primary"
+								:disabled="restaurant.isProcessing"
+								v-else
+								@click.stop.prevent="addFavorite(restaurant)"
+							>
+								加到最愛
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -160,3 +159,71 @@ export default {
 	},
 }
 </script>
+<style scoped>
+.card-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+.col-sm-4 {
+	padding: 18px;
+	margin-inline: 18px;
+}
+.card-img {
+	object-fit: cover;
+}
+@media (min-width: 480px) {
+	.col-sm-4 {
+		flex: 0 0 33.333333%;
+		max-width: 33.333333%;
+		padding: 0;
+		margin-inline: 0;
+	}
+	.col-sm-8 {
+		flex: 0 0 66.666667%;
+		max-width: 66.666667%;
+	}
+	.card-wrapper {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+		gap: 16px;
+	}
+	.card .col-xl-4 {
+		align-self: stretch;
+		padding: 18px;
+	}
+	.card-img {
+		width: 100%;
+		height: 100%;
+		margin-left: 18px;
+	}
+}
+@media (min-width: 768px) {
+	.col-lg-3 {
+		flex: 0 0 25%;
+		max-width: 25%;
+	}
+	.col-lg-9 {
+		flex: 0 0 75%;
+		max-width: 75%;
+	}
+	.card-img {
+		aspect-ratio: auto;
+		margin-left: 18px;
+	}
+}
+@media (min-width: 1200px) {
+	.row {
+		gap: 0;
+	}
+	.card .col-xl-4 {
+		align-self: stretch;
+		padding: 18px;
+	}
+	.card-img {
+		width: 100%;
+		height: 100%;
+		margin-left: 18px;
+	}
+}
+</style>
